@@ -143,7 +143,7 @@ function initGit(targetDir: string) {
   }
 
   git(["add", "."]);
-  git(["commit", "-m", "Initial commit from @teloset/telodocs"]);
+  git(["commit", "-m", "Initial commit from telodocs"]);
 }
 
 function printNextSteps(projectName: string, targetDir: string) {

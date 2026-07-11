@@ -2,12 +2,12 @@
 
 Scaffold a docs repo that serves as a **remote MCP server** with a minimal rendered docs site. One content source in `docs/` drives both agent queries and human browsing.
 
-Published as [`@teloset/telodocs`](https://www.npmjs.com/package/@teloset/telodocs) on npm. Source: [github.com/teloset/telodocs](https://github.com/teloset/telodocs).
+Published as [`telodocs`](https://www.npmjs.com/package/telodocs) on npm. Source: [github.com/teloset/telodocs](https://github.com/teloset/telodocs).
 
 ## Quick start
 
 ```bash
-npx @teloset/telodocs new my-docs
+npx telodocs new my-docs
 cd my-docs
 cp .env.example .env
 # Set TELODOCS_API_KEY in .env
