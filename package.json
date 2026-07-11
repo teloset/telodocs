@@ -2,6 +2,11 @@
   "name": "@teloset/telodocs",
   "version": "0.1.0",
   "description": "Scaffold a docs repo that serves as a remote MCP server with a minimal rendered docs site",
+  "author": "Sofonias <sofonias@teloset.com>",
+  "homepage": "https://github.com/teloset/telodocs#readme",
+  "bugs": {
+    "url": "https://github.com/teloset/telodocs/issues"
+  },
   "keywords": [
     "mcp",
     "model-context-protocol",
