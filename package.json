@@ -17,11 +17,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/teloset/telodocs.git"
+    "url": "git+https://github.com/teloset/telodocs.git"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "bin": {
-    "telodocs": "./dist/cli/index.js"
+    "telodocs": "dist/cli/index.js"
   },
   "files": [
     "dist",
