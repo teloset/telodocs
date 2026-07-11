@@ -1,4 +1,3 @@
-import { Command } from "cmdk";
 import {
   createContext,
   useCallback,
@@ -9,8 +8,14 @@ import {
 } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useNavigate } from "react-router-dom";
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { useDocsSearchQuery } from "./queries/use-docs-search-query";
-import "./search.css";
 
 interface SearchDialogContextValue {
   isOpen: boolean;
@@ -39,47 +44,46 @@ function SearchDialogPanel({
   const results = searchQuery.data ?? [];
 
   return (
-    <Command.Dialog
+    <CommandDialog
       open={isOpen}
       onOpenChange={setOpen}
-      label="Search documentation"
-      overlayClassName="docs-search-overlay"
-      contentClassName="docs-search-dialog"
+      title="Search documentation"
+      description="Search pages in this documentation site"
+      className="top-[12vh] left-[50%] max-w-xl -translate-x-1/2 translate-y-0 sm:max-w-xl"
+      showCloseButton
       shouldFilter={false}
     >
-      <div className="docs-search-input-wrap">
-        <span aria-hidden="true">⌕</span>
-        <Command.Input
-          className="docs-search-input"
-          placeholder="Search documentation…"
-          value={query}
-          onValueChange={setQuery}
-          autoFocus
-        />
-      </div>
+      <CommandInput
+        placeholder="Search documentation…"
+        value={query}
+        onValueChange={setQuery}
+      />
       {searchQuery.isFetching ? (
-        <p className="docs-search-loading">Searching…</p>
+        <p className="px-4 py-2 text-sm text-muted-foreground">Searching…</p>
       ) : null}
-      <Command.List className="docs-search-results">
-        <Command.Empty className="docs-search-empty">
+      <CommandList>
+        <CommandEmpty>
           {query.trim() ? "No results found." : "Type to search documentation."}
-        </Command.Empty>
+        </CommandEmpty>
         {results.map((hit) => (
-          <Command.Item
+          <CommandItem
             key={`${hit.href}-${hit.title}`}
             value={`${hit.title} ${hit.snippet} ${hit.href}`}
-            className="docs-search-result"
             onSelect={() => {
               close();
               navigate(hit.href);
             }}
           >
-            <span className="docs-search-result-title">{hit.title}</span>
-            <span className="docs-search-result-snippet">{hit.snippet}</span>
-          </Command.Item>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <span className="truncate font-medium">{hit.title}</span>
+              <span className="truncate text-xs text-muted-foreground">
+                {hit.snippet}
+              </span>
+            </div>
+          </CommandItem>
         ))}
-      </Command.List>
-    </Command.Dialog>
+      </CommandList>
+    </CommandDialog>
   );
 }
 

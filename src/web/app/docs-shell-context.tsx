@@ -3,7 +3,9 @@ import { createContext, useContext } from "react";
 export interface DocsShellUiState {
   sidebarOpen: boolean;
   closeSidebar: () => void;
+  openSidebar: () => void;
   toggleSidebar: () => void;
+  setSidebarOpen: (open: boolean) => void;
 }
 
 export const DocsShellContext = createContext<DocsShellUiState | null>(null);

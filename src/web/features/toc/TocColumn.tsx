@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 import type { TocHeading } from "../../shared/types/docs";
-import "./toc.css";
 
 function useActiveHeadingId(items: TocHeading[]): string | null {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -55,23 +56,34 @@ export function TocColumn({ headings }: TocColumnProps) {
   }
 
   return (
-    <aside className="docs-toc" aria-label="On this page">
-      <p className="docs-toc-title">On this page</p>
-      <ul className="docs-toc-list">
-        {items.map((heading) => (
-          <li
-            key={heading.id}
-            className={`docs-toc-item docs-toc-h${heading.level}`}
-          >
-            <a
-              href={`#${heading.id}`}
-              className={activeId === heading.id ? "is-active" : undefined}
-            >
-              {heading.text}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <aside
+      className="sticky top-14 hidden h-[calc(100vh-3.5rem)] border-l xl:block"
+      aria-label="On this page"
+    >
+      <ScrollArea className="h-full px-4 py-8">
+        <p className="mb-3 px-2 text-[11px] font-semibold tracking-wider text-muted-foreground uppercase">
+          On this page
+        </p>
+        <ul className="space-y-0.5">
+          {items.map((heading) => (
+            <li key={heading.id}>
+              <a
+                href={`#${heading.id}`}
+                className={cn(
+                  "block border-l-2 border-transparent py-1 text-sm text-muted-foreground transition-colors hover:text-primary",
+                  heading.level === 3 && "pl-5",
+                  heading.level >= 4 && "pl-7",
+                  heading.level === 2 && "pl-2",
+                  activeId === heading.id &&
+                    "border-primary font-medium text-primary",
+                )}
+              >
+                {heading.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </ScrollArea>
     </aside>
   );
 }

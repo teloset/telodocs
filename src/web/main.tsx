@@ -3,8 +3,7 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./app/router";
 import { hydrateDocsBootstrap } from "./shared/api/bootstrap";
-import "./shared/styles/tokens.css";
-import "./shared/styles/base.css";
+import "./shared/styles/globals.css";
 
 hydrateDocsBootstrap();
 

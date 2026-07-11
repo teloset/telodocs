@@ -6,7 +6,8 @@ function attachCopyButtons(root: HTMLElement) {
 
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "docs-code-copy";
+    button.className =
+      "docs-code-copy absolute top-2 right-2 inline-flex h-7 items-center rounded-md border bg-background px-2 text-xs shadow-xs hover:bg-accent";
     button.textContent = "Copy";
     button.addEventListener("click", async () => {
       const code =
