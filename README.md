@@ -79,15 +79,20 @@ echo "# Error handling\n\nAlways return structured errors..." > docs/error-handl
 
 ## Configuration
 
-Edit `telodocs.config.ts` in your generated project:
+All settings live in `.env` in your generated project:
 
-```typescript
-export default defineConfig({
-  docsDir: "./docs",
-  mcpPath: "/mcp",
-  docsAuth: "gated", // or "open" to make the browser UI public
-  port: 3000,
-});
+| Variable | Default | Description |
+|---|---|---|
+| `TELODOCS_API_KEY` | — | Required when docs or MCP auth is `gated` |
+| `TELODOCS_DOCS_AUTH` | `open` | `open` or `gated` (browser login page) |
+| `TELODOCS_MCP_AUTH` | `open` | `open` or `gated` (Bearer token for `/mcp`) |
+| `PORT` | `3000` | HTTP port |
+| `TELODOCS_DOCS_DIR` | `./docs` | Documentation directory |
+| `TELODOCS_MCP_PATH` | `/mcp` | MCP endpoint path |
+
+```bash
+cp .env.example .env
+# edit .env as needed
 ```
 
 ## Deploy
@@ -110,7 +115,7 @@ az deployment group create \
 
 ## Security model
 
-- **One shared API key** for all MCP consumers (and the docs site when `docsAuth` is `"gated"`)
+- **API key** (`TELODOCS_API_KEY`) — required only when `TELODOCS_DOCS_AUTH` or `TELODOCS_MCP_AUTH` is `gated` (both default to `open`)
 - Key is set via `TELODOCS_API_KEY` environment variable — never commit it
 - To rotate: redeploy with a new key; all clients must update
 - No per-user revocation in v1 — if the key leaks, everyone loses access until rotation

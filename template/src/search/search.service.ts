@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import fg from "fast-glob";
 import { spawn } from "node:child_process";
-import { TELODOCS_CONFIG, TelodocsConfig } from "../core/config/telodocs-config.schema";
+import { APP_CONFIG, AppConfig } from "../core/config/config.schema";
 
 export interface GrepMatch {
   file: string;
@@ -30,7 +30,7 @@ const GREP_TIMEOUT_MS = 5000;
 @Injectable()
 export class SearchService {
   constructor(
-    @Inject(TELODOCS_CONFIG) private readonly config: TelodocsConfig,
+    @Inject(APP_CONFIG) private readonly config: AppConfig,
   ) {}
 
   async glob(pattern: string): Promise<string[]> {

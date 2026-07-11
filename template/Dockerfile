@@ -11,6 +11,6 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/docs ./docs
 COPY --from=build /app/node_modules ./node_modules
-COPY package.json telodocs.config.json telodocs.config.ts ./
+COPY package.json ./
 EXPOSE 3000
 CMD ["node", "dist/main.js"]

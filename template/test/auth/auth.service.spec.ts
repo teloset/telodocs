@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { AuthService } from "./auth.service";
+import { AuthService } from "../../src/auth/auth.service";
+import { API_KEY_COOKIE } from "../../src/auth/auth.constants";
 
 describe("AuthService", () => {
   const originalEnv = process.env.TELODOCS_API_KEY;
@@ -34,6 +35,17 @@ describe("AuthService", () => {
     expect(() => auth.validateBearerToken(undefined)).toThrow(
       "Invalid or missing API key",
     );
+  });
+
+  it("accepts valid api key cookie on docs requests", () => {
+    process.env.TELODOCS_API_KEY = "test-secret-key";
+    const auth = new AuthService();
+    expect(() =>
+      auth.validateRequestAuth({
+        headers: {},
+        cookies: { [API_KEY_COOKIE]: "test-secret-key" },
+      }),
+    ).not.toThrow();
   });
 
   it("uses constant-time comparison", () => {

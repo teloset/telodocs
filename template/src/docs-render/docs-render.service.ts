@@ -4,7 +4,7 @@ import path from "node:path";
 import { marked } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
 import hljs from "highlight.js";
-import { TELODOCS_CONFIG, TelodocsConfig } from "../core/config/telodocs-config.schema";
+import { APP_CONFIG, AppConfig } from "../core/config/config.schema";
 import { SearchService } from "../search/search.service";
 
 export interface NavItem {
@@ -35,7 +35,7 @@ export class DocsRenderService {
   private readonly navTtlMs = 30_000;
 
   constructor(
-    @Inject(TELODOCS_CONFIG) private readonly config: TelodocsConfig,
+    @Inject(APP_CONFIG) private readonly config: AppConfig,
     private readonly search: SearchService,
   ) {}
 

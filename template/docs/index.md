@@ -10,7 +10,7 @@ This project was scaffolded with [Telodocs](https://github.com/teloset/telodocs)
 
 ## Quick start
 
-1. Set `TELODOCS_API_KEY` in `.env`
+1. Copy `.env.example` to `.env` and adjust settings if needed
 2. Run `npm install && npm run dev`
 3. Open http://localhost:3000
 4. Connect your MCP client (see README)

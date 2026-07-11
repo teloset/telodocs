@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { AuthModule } from "../auth/auth.module";
 import { SearchModule } from "../search/search.module";
-import { TELODOCS_CONFIG, TelodocsConfig } from "../core/config/telodocs-config.schema";
+import { APP_CONFIG, AppConfig } from "../core/config/config.schema";
 import { McpMiddleware } from "./mcp.middleware";
 import { McpService } from "./mcp.service";
 
@@ -17,7 +17,7 @@ import { McpService } from "./mcp.service";
   exports: [McpService],
 })
 export class McpModule implements NestModule {
-  constructor(@Inject(TELODOCS_CONFIG) private readonly config: TelodocsConfig) {}
+  constructor(@Inject(APP_CONFIG) private readonly config: AppConfig) {}
 
   configure(consumer: MiddlewareConsumer) {
     const mcpPath = this.config.mcpPath.replace(/^\//, "");

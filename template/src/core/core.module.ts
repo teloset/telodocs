@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
-import { TelodocsConfigModule } from "./config/telodocs-config.module";
+import { AppConfigModule } from "./config/config.module";
 
 @Module({
-  imports: [TelodocsConfigModule],
+  imports: [AppConfigModule],
 })
 export class CoreModule {}

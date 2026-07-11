@@ -16,9 +16,11 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
     "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@vscode/ripgrep": "^1.15.11",
+    "cookie-parser": "^1.4.7",
     "fast-glob": "^3.3.3",
     "highlight.js": "^11.11.1",
     "marked": "^15.0.12",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^11.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.0",
     "tsx": "^4.19.4",

@@ -1,23 +1,18 @@
 import "reflect-metadata";
 import { NestFactory } from "@nestjs/core";
+import cookieParser from "cookie-parser";
 import { AppModule } from "./app.module";
-import { loadEnvFile } from "./core/config/load-env";
-import {
-  TELODOCS_CONFIG,
-  TelodocsConfig,
-} from "./core/config/telodocs-config.schema";
-
-loadEnvFile();
+import { APP_CONFIG, AppConfig } from "./core/config/config.schema";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { rawBody: true });
-  const config = app.get<TelodocsConfig>(TELODOCS_CONFIG);
-  const port = Number(process.env.PORT ?? config.port);
+  app.use(cookieParser());
+  const config = app.get<AppConfig>(APP_CONFIG);
 
-  await app.listen(port);
-  console.log(`Telodocs running on http://localhost:${port}`);
-  console.log(`  MCP:  http://localhost:${port}${config.mcpPath}`);
-  console.log(`  Docs: http://localhost:${port}/`);
+  await app.listen(config.port);
+  console.log(`Telodocs running on http://localhost:${config.port}`);
+  console.log(`  MCP:  http://localhost:${config.port}${config.mcpPath}`);
+  console.log(`  Docs: http://localhost:${config.port}/`);
 }
 
 bootstrap().catch((err) => {

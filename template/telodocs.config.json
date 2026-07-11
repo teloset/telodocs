@@ -1,7 +1,0 @@
-{
-  "docsDir": "./docs",
-  "mcpPath": "/mcp",
-  "docsAuth": "gated",
-  "port": 3000,
-  "supportedExtensions": [".md", ".mdx", ".txt", ".rst"]
-}

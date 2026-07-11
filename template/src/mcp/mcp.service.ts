@@ -3,7 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import { TELODOCS_CONFIG, TelodocsConfig } from "../core/config/telodocs-config.schema";
+import { APP_CONFIG, AppConfig } from "../core/config/config.schema";
 import { SearchService } from "../search/search.service";
 
 const INSTRUCTIONS = `You are connected to a Telodocs documentation corpus.
@@ -22,7 +22,7 @@ export class McpService {
   private readonly logger = new Logger(McpService.name);
 
   constructor(
-    @Inject(TELODOCS_CONFIG) private readonly config: TelodocsConfig,
+    @Inject(APP_CONFIG) private readonly config: AppConfig,
     private readonly search: SearchService,
   ) {}
 

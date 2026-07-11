@@ -2,12 +2,12 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
-import { SearchService } from "./search.service";
-import { TelodocsConfig } from "../core/config/telodocs-config.schema";
+import { SearchService } from "../../src/search/search.service";
+import { AppConfig } from "../../src/core/config/config.schema";
 
 describe("SearchService", () => {
   let tmpDir: string;
-  let config: TelodocsConfig;
+  let config: AppConfig;
   let service: SearchService;
 
   beforeEach(async () => {
@@ -25,7 +25,8 @@ describe("SearchService", () => {
     config = {
       docsDir: tmpDir,
       mcpPath: "/mcp",
-      docsAuth: "gated",
+      docsAuth: "open",
+      mcpAuth: "open",
       port: 3000,
       supportedExtensions: [".md", ".mdx", ".txt", ".rst"],
     };

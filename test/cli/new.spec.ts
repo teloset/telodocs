@@ -11,6 +11,7 @@ describe("telodocs new", () => {
     expect(fs.existsSync(templateDir)).toBe(true);
     expect(fs.existsSync(path.join(templateDir, "package.json"))).toBe(true);
     expect(fs.existsSync(path.join(templateDir, "src/main.ts"))).toBe(true);
+    expect(fs.existsSync(path.join(templateDir, "test"))).toBe(true);
     expect(fs.existsSync(path.join(templateDir, "docs/index.md"))).toBe(true);
     expect(fs.existsSync(path.join(templateDir, "Dockerfile"))).toBe(true);
   });
@@ -41,8 +42,9 @@ describe("telodocs new", () => {
       await fsp.readFile(path.join(projectDir, "package.json"), "utf-8"),
     ) as { name: string };
     expect(packageJson.name).toBe("my-docs");
-    expect(fs.existsSync(path.join(projectDir, "telodocs.config.ts"))).toBe(true);
-    expect(fs.existsSync(path.join(projectDir, "src/core/config/load-env.ts"))).toBe(true);
+    expect(fs.existsSync(path.join(projectDir, ".env.example"))).toBe(true);
+    expect(fs.existsSync(path.join(projectDir, "test"))).toBe(true);
+    expect(fs.existsSync(path.join(projectDir, "telodocs.config.ts"))).toBe(false);
 
     await fsp.rm(tmpBase, { recursive: true, force: true });
   });
