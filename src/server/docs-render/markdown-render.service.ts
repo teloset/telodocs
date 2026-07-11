@@ -21,6 +21,10 @@ export class MarkdownRenderService {
   }
 
   async renderMarkdown(source: string): Promise<string> {
-    return marked.parse(source);
+    const html = await marked.parse(source);
+    return html.replace(
+      /<table>/g,
+      '<div class="docs-table-wrap"><table>',
+    ).replace(/<\/table>/g, "</table></div>");
   }
 }
