@@ -2,7 +2,7 @@
 
 **Docs site + MCP server from a single `docs/` folder.**
 
-Write Markdown. Telodocs runs the browser UI, search, and MCP tools (`glob_docs`, `grep_docs`, `read_doc`) — no NestJS app, no build step in your project.
+Write Markdown. Telodocs runs the browser UI, search, and MCP tools (`get_nav`, `list_docs`, `search_docs`, `glob`, `grep`, `read`) — no NestJS app, no build step in your project.
 
 ```bash
 npx telodocs new my-docs

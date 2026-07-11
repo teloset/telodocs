@@ -31,9 +31,12 @@ describe("SearchService", () => {
       supportedExtensions: [".md", ".mdx", ".txt", ".rst"],
     };
     service = new SearchService(config);
+    service.setInventoryTtlMs(60_000);
+    service.setWatcherEnabled(false);
   });
 
   afterEach(async () => {
+    service.onModuleDestroy();
     await fs.rm(tmpDir, { recursive: true, force: true });
   });
 
@@ -73,18 +76,95 @@ describe("SearchService", () => {
   });
 
   it("grep finds content matches", async () => {
-    const matches = await service.grep("structured errors");
-    expect(matches.length).toBeGreaterThan(0);
-    expect(matches[0]?.file).toBe("subdir/errors.md");
+    const result = await service.grep("structured errors");
+    expect(result.outputMode).toBe("content");
+    expect(result.matches.length).toBeGreaterThan(0);
+    expect(result.matches[0]?.file).toBe("subdir/errors.md");
   });
 
   it("grep respects maxResults", async () => {
-    const matches = await service.grep("e", { maxResults: 1 });
-    expect(matches.length).toBeLessThanOrEqual(1);
+    const result = await service.grep("e", { maxResults: 1 });
+    expect(result.outputMode).toBe("content");
+    expect(result.matches.length).toBeLessThanOrEqual(1);
+  });
+
+  it("grep supports files_with_matches output mode", async () => {
+    const result = await service.grep("structured errors", {
+      outputMode: "files_with_matches",
+    });
+    expect(result.outputMode).toBe("files_with_matches");
+    expect(result.files).toContain("subdir/errors.md");
+  });
+
+  it("grep supports count output mode", async () => {
+    const result = await service.grep("errors", {
+      outputMode: "count",
+    });
+    expect(result.outputMode).toBe("count");
+    expect(result.counts.some((entry) => entry.file === "subdir/errors.md")).toBe(
+      true,
+    );
+  });
+
+  it("grep supports case_insensitive search", async () => {
+    const result = await service.grep("STRUCTURED ERRORS", {
+      caseInsensitive: true,
+    });
+    expect(result.outputMode).toBe("content");
+    expect(result.matches.length).toBeGreaterThan(0);
+  });
+
+  it("glob supports path scoping", async () => {
+    const files = await service.glob("*.md", { path: "subdir" });
+    expect(files).toEqual(["subdir/errors.md"]);
   });
 
   it("listDocFiles returns sorted supported files", async () => {
     const files = await service.listDocFiles();
     expect(files).toEqual(["index.md", "subdir/errors.md"]);
+  });
+
+  it("listDocFiles picks up new files after cache invalidation", async () => {
+    await service.listDocFiles();
+    await fs.writeFile(
+      path.join(tmpDir, "new-page.md"),
+      "# New Page\n",
+    );
+    service.invalidateCaches();
+
+    const files = await service.listDocFiles();
+    expect(files).toContain("new-page.md");
+  });
+
+  it("listMeta returns titles from the warmed inventory", async () => {
+    const meta = await service.listMeta();
+    const index = meta.find((entry) => entry.path === "index.md");
+    expect(index?.title).toBe("Home");
+  });
+
+  it("getMeta returns a single warmed entry", async () => {
+    const meta = await service.getMeta("subdir/errors.md");
+    expect(meta?.title).toBe("Errors");
+    expect(meta?.size).toBeGreaterThan(0);
+  });
+
+  it("read serves updated content after invalidation", async () => {
+    const first = await service.read("index.md");
+    expect(first.content).toContain("Welcome to the docs");
+
+    await fs.writeFile(
+      path.join(tmpDir, "index.md"),
+      "# Home\n\nUpdated welcome copy.\n",
+    );
+    service.invalidateCaches();
+
+    const second = await service.read("index.md");
+    expect(second.content).toContain("Updated welcome copy");
+  });
+
+  it("glob uses cached inventory for common patterns", async () => {
+    await service.listDocFiles();
+    const files = await service.glob("subdir/*.md");
+    expect(files).toEqual(["subdir/errors.md"]);
   });
 });

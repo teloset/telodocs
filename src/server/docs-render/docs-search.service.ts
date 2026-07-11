@@ -1,12 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { SearchService } from "../search/search.service";
+import { GrepMatch } from "../search/search.types";
 import { DocMetaService } from "./doc-meta.service";
 import { pageHref } from "./utils/page-slug.util";
 
 export interface DocsSearchHit {
+  path: string;
   title: string;
   href: string;
   snippet: string;
+  line?: number;
 }
 
 @Injectable()
@@ -25,23 +28,28 @@ export class DocsSearchService {
     const hits = new Map<string, DocsSearchHit>();
     const term = query.toLowerCase();
 
-    for (const file of await this.search.listDocFiles()) {
-      const title = await this.docMeta.getPageTitle(file);
+    for (const meta of await this.search.listMeta()) {
       if (
-        title.toLowerCase().includes(term) ||
-        file.toLowerCase().includes(term)
+        meta.title.toLowerCase().includes(term) ||
+        meta.path.toLowerCase().includes(term)
       ) {
-        hits.set(file, { title, href: pageHref(file), snippet: file });
+        hits.set(meta.path, {
+          path: meta.path,
+          title: meta.title,
+          href: pageHref(meta.path),
+          snippet: meta.path,
+        });
       }
     }
 
     const pattern = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    let matches: Awaited<ReturnType<SearchService["grep"]>> = [];
+    let matches: GrepMatch[] = [];
     try {
-      matches = await this.search.grep(pattern, {
+      const result = await this.search.grep(pattern, {
         glob: "*.{md,mdx,txt,rst}",
         maxResults: limit,
       });
+      matches = result.outputMode === "content" ? result.matches : [];
     } catch {
       // Title/path matches above are still useful if ripgrep is unavailable.
     }
@@ -53,9 +61,11 @@ export class DocsSearchService {
 
       const title = await this.docMeta.getPageTitle(match.file);
       hits.set(match.file, {
+        path: match.file,
         title,
         href: pageHref(match.file),
         snippet: match.text.trim(),
+        line: match.line,
       });
     }
 

@@ -178,9 +178,10 @@ Remove `docs.json` entirely to fall back to an automatic file-tree sidebar.
 
 When connected to the running telodocs MCP server:
 
-1. `glob_docs` — find files by path pattern (e.g. `**/*error*`)
-2. `grep_docs` — search file contents for keywords or regex
-3. `read_doc` — read a full file or a line range
+1. `get_nav` or `list_docs` — orient in the corpus
+2. `search_docs` — broad lookup across titles, paths, and content
+3. `grep` with `output_mode: files_with_matches` — narrow to relevant pages
+4. `read` with `offset`/`limit` — load only the section you need
 
 Prefer these tools over guessing file locations.
 

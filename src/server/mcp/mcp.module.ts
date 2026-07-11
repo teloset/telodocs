@@ -6,13 +6,14 @@ import {
   RequestMethod,
 } from "@nestjs/common";
 import { AuthModule } from "../auth/auth.module";
+import { DocsRenderModule } from "../docs-render/docs-render.module";
 import { SearchModule } from "../search/search.module";
 import { APP_CONFIG, AppConfig } from "../core/config/config.schema";
 import { McpMiddleware } from "./mcp.middleware";
 import { McpService } from "./mcp.service";
 
 @Module({
-  imports: [AuthModule, SearchModule],
+  imports: [AuthModule, SearchModule, DocsRenderModule],
   providers: [McpService, McpMiddleware],
   exports: [McpService],
 })

@@ -25,5 +25,6 @@ import { MarkdownRenderService } from "./markdown-render.service";
     MarkdownRenderService,
     ContentRenderService,
   ],
+  exports: [DocsSearchService, DocsNavService, DocMetaService],
 })
 export class DocsRenderModule {}

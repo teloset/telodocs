@@ -17,7 +17,7 @@ description: Documentation for {{projectName}}, powered by Telodocs — one cont
 ## What you have
 
 - **`docs/`** — your documentation content (source of truth)
-- **MCP server** at `/mcp` — agents query docs via `glob_docs`, `grep_docs`, `read_doc`
+- **MCP server** at `/mcp` — agents query docs via `get_nav`, `list_docs`, `search_docs`, `glob`, `grep`, `read`
 - **Docs site** at `/` — humans browse the same Markdown in a browser
 
 ## Customize navigation
