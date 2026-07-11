@@ -73,7 +73,8 @@ export class AuthGuard implements CanActivate {
     return (
       pathname === "/" ||
       pathname.startsWith("/docs") ||
-      pathname.startsWith("/assets")
+      pathname.startsWith("/assets") ||
+      pathname.startsWith("/api/docs")
     );
   }
 }

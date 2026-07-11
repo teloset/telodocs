@@ -1,9 +1,12 @@
 import { Injectable, Inject } from "@nestjs/common";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createRequire } from "node:module";
 import fg from "fast-glob";
 import { spawn } from "node:child_process";
 import { APP_CONFIG, AppConfig } from "../core/config/config.schema";
+
+const nodeRequire = createRequire(__filename);
 
 export interface GrepMatch {
   file: string;
@@ -150,49 +153,62 @@ export class SearchService {
     return this.config.supportedExtensions.includes(ext);
   }
 
-  private async getRgPath(): Promise<string> {
-    const { rgPath } = await import("@vscode/ripgrep");
-    return rgPath;
+  private getRgPath(): string {
+    const arch = process.env.npm_config_arch || process.arch;
+    const binaryName = process.platform === "win32" ? "rg.exe" : "rg";
+    const platformPkg = `@vscode/ripgrep-${process.platform}-${arch}`;
+
+    try {
+      return nodeRequire.resolve(`${platformPkg}/bin/${binaryName}`);
+    } catch {
+      throw new Error(
+        `Could not find ${platformPkg}. Ensure optionalDependencies are installed for ${process.platform}-${arch}.`,
+      );
+    }
   }
 
   private runRipgrep(args: string[]): Promise<string> {
     return new Promise((resolve, reject) => {
-      void this.getRgPath()
-        .then((rgPath) => {
-          const child = spawn(rgPath, args, {
-            stdio: ["ignore", "pipe", "pipe"],
-          });
-          let stdout = "";
-          let stderr = "";
+      let rgPath: string;
+      try {
+        rgPath = this.getRgPath();
+      } catch (err) {
+        reject(err);
+        return;
+      }
 
-          const timer = setTimeout(() => {
-            child.kill("SIGTERM");
-            reject(new Error(`grep timed out after ${GREP_TIMEOUT_MS}ms`));
-          }, GREP_TIMEOUT_MS);
+      const child = spawn(rgPath, args, {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+      let stdout = "";
+      let stderr = "";
 
-          child.stdout.on("data", (chunk: Buffer) => {
-            stdout += chunk.toString();
-          });
+      const timer = setTimeout(() => {
+        child.kill("SIGTERM");
+        reject(new Error(`grep timed out after ${GREP_TIMEOUT_MS}ms`));
+      }, GREP_TIMEOUT_MS);
 
-          child.stderr.on("data", (chunk: Buffer) => {
-            stderr += chunk.toString();
-          });
+      child.stdout.on("data", (chunk: Buffer) => {
+        stdout += chunk.toString();
+      });
 
-          child.on("error", (err) => {
-            clearTimeout(timer);
-            reject(err);
-          });
+      child.stderr.on("data", (chunk: Buffer) => {
+        stderr += chunk.toString();
+      });
 
-          child.on("close", (code) => {
-            clearTimeout(timer);
-            if (code === 0 || code === 1) {
-              resolve(stdout);
-              return;
-            }
-            reject(new Error(stderr || `ripgrep exited with code ${code}`));
-          });
-        })
-        .catch(reject);
+      child.on("error", (err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+
+      child.on("close", (code) => {
+        clearTimeout(timer);
+        if (code === 0 || code === 1) {
+          resolve(stdout);
+          return;
+        }
+        reject(new Error(stderr || `ripgrep exited with code ${code}`));
+      });
     });
   }
 

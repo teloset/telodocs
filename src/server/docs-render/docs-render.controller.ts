@@ -1,34 +1,53 @@
-import { Controller, Get, Param, Res } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+  Res,
+} from "@nestjs/common";
 import { Response } from "express";
-import { DocsRenderService } from "./docs-render.service";
+import { DocsApiService } from "./docs-api.service";
+import { DocsSearchService } from "./docs-search.service";
+import { DocsSpaService } from "./docs-spa.service";
 import { DocsStaticService } from "./docs-static.service";
-import { LayoutService } from "./layout.service";
-import { readServerAsset } from "./utils/server-asset.util";
 
 @Controller()
 export class DocsRenderController {
   constructor(
-    private readonly docsRender: DocsRenderService,
-    private readonly layout: LayoutService,
+    private readonly docsApi: DocsApiService,
+    private readonly docsSearch: DocsSearchService,
+    private readonly docsSpa: DocsSpaService,
     private readonly docsStatic: DocsStaticService,
   ) {}
 
-  @Get()
-  async index(@Res() res: Response) {
-    const html = await this.docsRender.renderIndex();
-    res.type("html").send(html);
+  @Get("api/docs/site")
+  async site(@Res() res: Response) {
+    res.json(await this.docsApi.getSite());
   }
 
-  @Get("docs/*path")
-  async docPage(@Param("path") pathSegments: string[], @Res() res: Response) {
-    const relativePath = pathSegments.join("/");
+  @Get("api/docs/nav")
+  async nav(@Res() res: Response) {
+    res.json(await this.docsApi.getNav());
+  }
+
+  @Get("api/docs/page")
+  async page(@Query("path") docPath: string | undefined, @Res() res: Response) {
     try {
-      const html = await this.docsRender.renderPage(relativePath);
-      res.type("html").send(html);
+      const resolved = this.docsApi.resolveRequestedPath(docPath);
+      res.json(await this.docsApi.getPage(resolved));
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Not found";
-      res.status(404).type("html").send(`<h1>Not Found</h1><p>${message}</p>`);
+      if (err instanceof NotFoundException) {
+        res.status(404).json({ message: err.message });
+        return;
+      }
+      throw err;
     }
+  }
+
+  @Get("api/docs/search")
+  async search(@Query("q") query = "", @Res() res: Response) {
+    res.json({ results: await this.docsSearch.query(query) });
   }
 
   @Get("docs-assets/*path")
@@ -43,27 +62,21 @@ export class DocsRenderController {
     }
   }
 
-  @Get("assets/docs-shell.css")
-  shellStyles(@Res() res: Response) {
-    res.type("text/css").send(this.layout.getStylesheet("docs-shell.css"));
+  @Get("assets/*path")
+  spaAsset(@Param("path") pathSegments: string[], @Res() res: Response) {
+    const assetPath = this.docsSpa.resolveAssetPath(
+      `/assets/${pathSegments.join("/")}`,
+    );
+    if (!assetPath) {
+      res.status(404).type("text/plain").send("Not found");
+      return;
+    }
+
+    res.type(this.docsSpa.getContentType(assetPath)).sendFile(assetPath);
   }
 
-  @Get("assets/docs-prose.css")
-  proseStyles(@Res() res: Response) {
-    res.type("text/css").send(this.layout.getStylesheet("docs-prose.css"));
-  }
-
-  @Get("assets/docs-toc.css")
-  tocStyles(@Res() res: Response) {
-    res.type("text/css").send(this.layout.getStylesheet("docs-toc.css"));
-  }
-
-  @Get("assets/docs.js")
-  script(@Res() res: Response) {
-    res.type("application/javascript").send(this.loadAsset("docs.js"));
-  }
-
-  private loadAsset(name: string): string {
-    return readServerAsset(name);
+  @Get(["", "docs", "docs/*path"])
+  spaFallback(@Res() res: Response) {
+    res.type("html").sendFile(this.docsSpa.getIndexPath());
   }
 }

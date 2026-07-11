@@ -1,0 +1,17 @@
+:root {
+  --docs-bg: #ffffff;
+  --docs-sidebar-bg: #fafafa;
+  --docs-surface: #ffffff;
+  --docs-border: #e5e7eb;
+  --docs-text: #111827;
+  --docs-muted: #6b7280;
+  --docs-accent: #059669;
+  --docs-accent-hover: #047857;
+  --docs-accent-soft: rgba(5, 150, 105, 0.1);
+  --docs-sidebar-width: 17.5rem;
+  --docs-toc-width: 14rem;
+  --docs-topbar-height: 3.5rem;
+  --docs-content-width: 44rem;
+  --docs-radius: 0;
+  --docs-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}

@@ -16,7 +16,8 @@ User-facing documentation projects scaffolded via `telodocs new` include their o
 | Path | Purpose |
 |---|---|
 | `src/cli/` | CLI commands (`new`, `dev`, `start`) |
-| `src/server/` | NestJS server — docs UI, MCP, search, auth |
+| `src/server/` | NestJS server — docs API, MCP, search, auth |
+| `src/web/` | React docs UI (Vite, feature-based, React Query) |
 | `template/` | Files copied by `telodocs new` (docs-only scaffold) |
 | `test/` | Vitest tests |
 
@@ -51,8 +52,7 @@ There is no `docs/` folder in this repo. To manually verify UI changes:
 
 ```bash
 npm run build
-node dist/cli/index.js new /tmp/telodocs-smoke --no-git
-cd /tmp/telodocs-smoke && node ../dist/cli/index.js dev
+TELODOCS_DOCS_DIR=./template/docs node dist/server/main.js
 ```
 
-Or point `TELODOCS_DOCS_DIR` at `template/docs` when running the server from this repo.
+Or scaffold a smoke project and run `telodocs dev`.
