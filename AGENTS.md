@@ -42,9 +42,14 @@ Documentation authoring instructions for end users live in `template/AGENTS.md` 
 
 ## Releases
 
-- Version lives in `package.json`
-- Push a `v*` tag to trigger `.github/workflows/publish.yml` (trusted publishing to npm as `telodocs`)
+telodocs is an npm package. **Bump the version on every change** unless the user explicitly says not to.
+
+- Version lives in `package.json` (keep `package-lock.json` in sync)
+- Prefer patch bumps for incremental fixes/features (`0.4.0` → `0.4.1`); use minor/major when the change warrants it
+- Commit message style: `Release vX.Y.Z with <short summary>.`
+- Push a `v*` tag (after merge to the default branch) to trigger `.github/workflows/publish.yml` (trusted publishing to npm as `telodocs`)
 - Do not publish manually unless setting up a new package name on npm
+- Do not create/push the `v*` tag from an unmerged feature branch
 
 ## Testing docs UI changes
 
