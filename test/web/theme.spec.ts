@@ -5,7 +5,7 @@ import {
   parseStoredTheme,
   resolveTheme,
   themeLabel,
-} from "../../../src/web/app/theme";
+} from "../../src/web/app/theme";
 
 describe("theme helpers", () => {
   it("parses stored theme values and falls back to system", () => {
