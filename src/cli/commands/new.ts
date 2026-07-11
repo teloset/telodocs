@@ -13,9 +13,7 @@ const SKIP_DIRS = new Set([
   "coverage",
 ]);
 
-const SKIP_FILES = new Set([
-  "package-lock.json",
-]);
+const SKIP_FILES = new Set<string>();
 
 export function registerNewCommand(program: Command) {
   program
