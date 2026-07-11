@@ -2,6 +2,7 @@ import { Menu, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { McpIcon } from "@/shared/components/McpIcon";
 import type { SiteBranding } from "../../shared/types/docs";
 import { useSearchDialog } from "../search/search-dialog-context";
 import { ThemeToggle } from "./ThemeToggle";
@@ -39,10 +40,7 @@ export function Topbar({ site, onMenuClick }: TopbarProps) {
               alt=""
             />
           ) : (
-            <span
-              className="size-6 shrink-0 rounded-sm bg-primary"
-              aria-hidden="true"
-            />
+            <McpIcon className="size-6 shrink-0 text-foreground" />
           )}
           <span className="truncate text-sm">{siteName}</span>
         </Link>

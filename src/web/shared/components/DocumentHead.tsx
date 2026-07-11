@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import defaultFaviconUrl from "../assets/mcp-favicon.svg";
 
 interface DocumentHeadProps {
   title?: string;
@@ -9,7 +9,7 @@ export function DocumentHead({ title, faviconUrl }: DocumentHeadProps) {
   return (
     <>
       {title ? <title>{title}</title> : null}
-      {faviconUrl ? <link rel="icon" href={faviconUrl} /> : null}
+      <link rel="icon" href={faviconUrl ?? defaultFaviconUrl} />
     </>
   );
 }
