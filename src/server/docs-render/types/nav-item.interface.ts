@@ -4,4 +4,6 @@ export interface NavItem {
   children: NavItem[];
   isGroup?: boolean;
   href?: string;
+  /** When set, controls default open state for collapsible groups. */
+  defaultExpanded?: boolean;
 }

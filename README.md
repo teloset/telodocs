@@ -10,8 +10,8 @@ cd my-docs
 npx telodocs dev
 ```
 
-- **Docs site:** http://localhost:3000  
-- **MCP server:** http://localhost:3000/mcp  
+- **Docs site:** http://localhost:3000
+- **MCP server:** http://localhost:3000/mcp
 
 [GitHub](https://github.com/teloset/telodocs) · [npm](https://www.npmjs.com/package/telodocs)
 
@@ -48,7 +48,7 @@ Telodocs ships the server when you run `telodocs dev` or `telodocs start` — yo
 Telodocs reads a Mintlify-style `docs/docs.json` and supports `.md` / `.mdx` pages. When moving an existing site:
 
 - Put `docs.json`, logo, and favicon under `docs/`
-- Flatten nested nav groups into single-level group names
+- Use nested groups in `pages` for collapsible sidebar sections (Mintlify format)
 - Use page slugs without extensions (e.g. `guides/getting-started`)
 - Only root `index` is the homepage — section indexes stay at `/docs/.../index.mdx`
 - Replace Mintlify `<Card>` components with `<div class="docs-card-grid">` / `<a class="docs-card">`
@@ -57,11 +57,11 @@ See `template/AGENTS.md` (copied into new projects) for step-by-step agent instr
 
 ## Commands
 
-| Command | Description |
-|---|---|
+| Command               | Description                  |
+| --------------------- | ---------------------------- |
 | `telodocs new <name>` | Scaffold a docs-only project |
-| `telodocs dev` | Start server (development) |
-| `telodocs start` | Start server (production) |
+| `telodocs dev`        | Start server (development)   |
+| `telodocs start`      | Start server (production)    |
 
 Run from the directory that contains `docs/`.
 
@@ -98,14 +98,14 @@ Omit `headers` while auth is `open`. Replace the token if you changed `TELODOCS_
 
 `.env` is created on `telodocs new`:
 
-| Variable | Default | Description |
-|---|---|---|
-| `TELODOCS_API_KEY` | `i-love-coding-agents` | Used when auth is `gated` (change before production) |
-| `TELODOCS_DOCS_AUTH` | `open` | `open` or `gated` |
-| `TELODOCS_MCP_AUTH` | `open` | `open` or `gated` |
-| `PORT` | `3000` | HTTP port |
-| `TELODOCS_DOCS_DIR` | `./docs` | Documentation directory |
-| `TELODOCS_MCP_PATH` | `/mcp` | MCP endpoint path |
+| Variable             | Default                | Description                                          |
+| -------------------- | ---------------------- | ---------------------------------------------------- |
+| `TELODOCS_API_KEY`   | `i-love-coding-agents` | Used when auth is `gated` (change before production) |
+| `TELODOCS_DOCS_AUTH` | `open`                 | `open` or `gated`                                    |
+| `TELODOCS_MCP_AUTH`  | `open`                 | `open` or `gated`                                    |
+| `PORT`               | `3000`                 | HTTP port                                            |
+| `TELODOCS_DOCS_DIR`  | `./docs`               | Documentation directory                              |
+| `TELODOCS_MCP_PATH`  | `/mcp`                 | MCP endpoint path                                    |
 
 ## How it works
 

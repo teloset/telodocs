@@ -4,6 +4,7 @@ export interface NavItem {
   children: NavItem[];
   isGroup?: boolean;
   href?: string;
+  defaultExpanded?: boolean;
 }
 
 export interface SiteBranding {

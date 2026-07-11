@@ -9,11 +9,15 @@
         "groups": [
           {
             "group": "Getting started",
-            "pages": ["index", "guides/getting-started"]
-          },
-          {
-            "group": "Reference",
-            "pages": ["conventions"]
+            "pages": [
+              "index",
+              "guides/getting-started",
+              {
+                "group": "Advanced",
+                "expanded": false,
+                "pages": ["conventions"]
+              }
+            ]
           }
         ]
       }

@@ -50,6 +50,50 @@ describe("docs navigation", () => {
     ]);
   });
 
+  it("builds nested groups from docs.json", () => {
+    const tree = buildConfigNav(
+      {
+        navigation: {
+          tabs: [
+            {
+              tab: "Docs",
+              groups: [
+                {
+                  group: "Engineering Standards",
+                  pages: [
+                    "index",
+                    {
+                      group: "API Design",
+                      expanded: true,
+                      pages: [
+                        "guides/getting-started",
+                        "conventions",
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      },
+      files,
+    );
+
+    expect(tree).toHaveLength(1);
+    expect(tree[0]?.defaultExpanded).toBe(false);
+    expect(tree[0]?.children).toHaveLength(2);
+    expect(tree[0]?.children[1]).toMatchObject({
+      name: "API Design",
+      isGroup: true,
+      defaultExpanded: true,
+      children: [
+        expect.objectContaining({ path: "guides/getting-started.md" }),
+        expect.objectContaining({ path: "conventions.md" }),
+      ],
+    });
+  });
+
   it("resolves page slugs to files", () => {
     expect(resolvePageSlug("guides/getting-started", files)).toBe(
       "guides/getting-started.md",

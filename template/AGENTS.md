@@ -82,6 +82,26 @@ Edit `docs/docs.json` to control site name, branding, and sidebar order:
 
 Page slugs in `pages` are paths **without** the file extension, relative to `docs/` (for example `guides/getting-started` → `docs/guides/getting-started.md`).
 
+**Nested groups:** `pages` entries can be page slugs or nested group objects (Mintlify-compatible):
+
+```json
+{
+  "group": "Engineering Standards",
+  "pages": [
+    "index",
+    {
+      "group": "API Design",
+      "expanded": false,
+      "pages": ["engineering-standards/api-design/introduction"]
+    }
+  ]
+}
+```
+
+Use `"expanded": true` to open a nested group by default. Groups collapse by default so the sidebar stays scannable. The group containing the current page opens automatically.
+
+Optional `"root": "section/index"` on a group links the group title to that page (Mintlify-style).
+
 **Important:** Only `index` at the root of `docs/` becomes the site homepage (`/`). Section index pages such as `engineering-standards/index` are normal pages at `/docs/engineering-standards/index.mdx` — do not expect every folder's `index` page to map to `/`.
 
 Logo and favicon paths are relative to `docs/` and served at `/docs-assets/*`.
@@ -99,14 +119,14 @@ If you are moving an existing Mintlify docs site:
        "start": "telodocs start"
      },
      "dependencies": {
-       "telodocs": "^0.3.1"
+       "telodocs": "^0.3.2"
      }
    }
    ```
 
 2. **Move config** — copy your Mintlify `docs.json` into `docs/docs.json`. Telodocs uses the same top-level shape (`name`, `logo`, `favicon`, `navigation.tabs[].groups[].pages`).
 
-3. **Flatten nested sidebar groups** — telodocs currently supports one level of groups. Merge nested Mintlify groups into flat names such as `Engineering Standards — API Design`.
+3. **Use nested sidebar groups** — nest groups inside `pages` (Mintlify format). Telodocs renders them as collapsible dropdowns. Set `"expanded": true` to open a section by default.
 
 4. **Normalize page slugs** — use paths relative to `docs/` without a leading `docs/` prefix and without `.md`/`.mdx` (for example `guides/getting-started`, not `docs/guides/getting-started.md`).
 

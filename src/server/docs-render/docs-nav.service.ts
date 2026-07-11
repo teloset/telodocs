@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { SearchService } from "../search/search.service";
-import { buildConfigNav } from "./builders/config-nav.builder";
+import { buildConfigNav, listConfigPageSlugs } from "./builders/config-nav.builder";
 import { buildFileNav } from "./builders/file-nav.builder";
 import { DocMetaService } from "./doc-meta.service";
 import { DocsConfigService } from "./docs-config.service";
@@ -44,8 +44,9 @@ export class DocsNavService {
     files: string[],
   ): Promise<NavItem[]> {
     const slugs =
-      config.navigation?.tabs?.[0]?.groups?.flatMap((group) => group.pages) ??
-      [];
+      config.navigation?.tabs?.[0]?.groups?.flatMap((group) =>
+        listConfigPageSlugs(group.pages),
+      ) ?? [];
     const paths = slugs
       .map((slug) => resolvePageSlug(slug, files))
       .filter((filePath): filePath is string => Boolean(filePath));

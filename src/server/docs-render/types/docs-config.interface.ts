@@ -1,6 +1,17 @@
+export interface DocsConfigNestedGroup {
+  group: string;
+  pages: DocsConfigPageEntry[];
+  expanded?: boolean;
+  root?: string;
+}
+
+export type DocsConfigPageEntry = string | DocsConfigNestedGroup;
+
 export interface DocsConfigGroup {
   group: string;
-  pages: string[];
+  pages: DocsConfigPageEntry[];
+  expanded?: boolean;
+  root?: string;
 }
 
 export interface DocsConfigTab {

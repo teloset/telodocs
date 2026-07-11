@@ -19,12 +19,16 @@ function containsActive(nodes: NavItem[], activePath: string): boolean {
   );
 }
 
-function folderIsActive(node: NavItem, activePath: string): boolean {
+function branchIsActive(node: NavItem, activePath: string): boolean {
   return (
     docPathsMatch(activePath, node.path) ||
     Boolean(node.path && activePath.startsWith(`${node.path}/`)) ||
     containsActive(node.children, activePath)
   );
+}
+
+function isCollapsibleBranch(node: NavItem): boolean {
+  return node.children.length > 0 && (node.isGroup || !node.path);
 }
 
 function NavLevel({
@@ -65,50 +69,15 @@ function NavNode({
   onNavigate: () => void;
 }) {
   const { pathname } = useLocation();
-  const isFolder = node.children.length > 0 && !node.path;
-  const branchActive = isFolder && folderIsActive(node, activePath);
-  const [override, setOverride] = useState<{
-    open: boolean;
-    forPath: string;
-  } | null>(null);
-  const open =
-    override?.forPath === activePath ? override.open : branchActive;
 
-  if (node.isGroup) {
+  if (isCollapsibleBranch(node)) {
     return (
-      <li className="docs-nav-section">
-        <h5 className="docs-nav-group-title">{node.name}</h5>
-        <NavLevel
-          nodes={node.children}
-          depth={depth + 1}
-          activePath={activePath}
-          onNavigate={onNavigate}
-        />
-      </li>
-    );
-  }
-
-  if (isFolder) {
-    return (
-      <li className={`docs-nav-folder${open ? " is-open" : ""}`}>
-        <button
-          type="button"
-          className="docs-nav-folder-toggle"
-          aria-expanded={open}
-          onClick={() =>
-            setOverride({ open: !open, forPath: activePath })
-          }
-        >
-          <span className="docs-nav-chevron" aria-hidden="true" />
-          <span>{node.name}</span>
-        </button>
-        <NavLevel
-          nodes={node.children}
-          depth={depth + 1}
-          activePath={activePath}
-          onNavigate={onNavigate}
-        />
-      </li>
+      <CollapsibleBranch
+        node={node}
+        depth={depth}
+        activePath={activePath}
+        onNavigate={onNavigate}
+      />
     );
   }
 
@@ -128,6 +97,72 @@ function NavNode({
       >
         {node.name}
       </NavLink>
+    </li>
+  );
+}
+
+function CollapsibleBranch({
+  node,
+  depth,
+  activePath,
+  onNavigate,
+}: {
+  node: NavItem;
+  depth: number;
+  activePath: string;
+  onNavigate: () => void;
+}) {
+  const branchActive = branchIsActive(node, activePath);
+  const [override, setOverride] = useState<{
+    open: boolean;
+    forPath: string;
+  } | null>(null);
+  const defaultOpen = branchActive || node.defaultExpanded === true;
+  const open =
+    override?.forPath === activePath ? override.open : defaultOpen;
+
+  const toggle = () =>
+    setOverride({ open: !open, forPath: activePath });
+
+  return (
+    <li
+      className={`docs-nav-branch${node.isGroup ? " docs-nav-group" : ""}${open ? " is-open" : ""}`}
+      data-depth={depth}
+    >
+      <div className="docs-nav-branch-header">
+        <button
+          type="button"
+          className="docs-nav-branch-toggle"
+          aria-expanded={open}
+          aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
+          onClick={toggle}
+        >
+          <span className="docs-nav-chevron" aria-hidden="true" />
+        </button>
+        {node.href ? (
+          <NavLink
+            className="docs-nav-branch-label docs-nav-link"
+            to={node.href}
+            onClick={onNavigate}
+          >
+            {node.name}
+          </NavLink>
+        ) : (
+          <button
+            type="button"
+            className="docs-nav-branch-label"
+            onClick={toggle}
+          >
+            {node.name}
+          </button>
+        )}
+      </div>
+      <NavLevel
+        nodes={node.children}
+        depth={depth + 1}
+        activePath={activePath}
+        onNavigate={onNavigate}
+      />
     </li>
   );
 }
