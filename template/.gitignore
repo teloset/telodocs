@@ -1,4 +1,4 @@
-docs/
-.env.example
-.gitignore
-README.md
+.env
+.env.local
+*.log
+.DS_Store

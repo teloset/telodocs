@@ -29,6 +29,8 @@ describe("telodocs new", () => {
     expect(result.status).toBe(0);
     expect(fs.existsSync(path.join(projectDir, "docs/index.md"))).toBe(true);
     expect(fs.existsSync(path.join(projectDir, "docs/docs.json"))).toBe(true);
+    expect(fs.existsSync(path.join(projectDir, "AGENTS.md"))).toBe(true);
+    expect(fs.existsSync(path.join(projectDir, ".env"))).toBe(true);
     expect(fs.existsSync(path.join(projectDir, "package.json"))).toBe(false);
     expect(fs.existsSync(path.join(projectDir, "src"))).toBe(false);
 
@@ -37,6 +39,11 @@ describe("telodocs new", () => {
       "utf-8",
     );
     expect(docsJson).toContain("my-docs Docs");
+
+    const env = await fsp.readFile(path.join(projectDir, ".env"), "utf-8");
+    const keyMatch = env.match(/^TELODOCS_API_KEY=(.+)$/m);
+    expect(keyMatch).not.toBeNull();
+    expect(keyMatch![1]).toBe("i-love-coding-agents");
 
     await fsp.rm(tmpBase, { recursive: true, force: true });
   });

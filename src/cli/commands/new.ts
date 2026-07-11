@@ -5,8 +5,15 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 
 const PROJECT_NAME_RE = /^[a-zA-Z][a-zA-Z0-9._-]*$/;
+const DEFAULT_API_KEY = "i-love-coding-agents";
 
-const SCAFFOLD_ENTRIES = ["docs", ".env.example", ".gitignore", "README.md"];
+const SCAFFOLD_ENTRIES = [
+  "docs",
+  ".env.example",
+  ".gitignore",
+  "README.md",
+  "AGENTS.md",
+];
 
 export function registerNewCommand(program: Command) {
   program
@@ -23,6 +30,7 @@ export function registerNewCommand(program: Command) {
 
       const templateDir = resolveTemplateDir();
       await copyScaffold(templateDir, targetDir, projectName);
+      await writeEnvFile(targetDir, path.join(templateDir, ".env.example"));
 
       if (options.git !== false) {
         initGit(targetDir);
@@ -135,6 +143,16 @@ function replaceTokens(content: string, tokens: Record<string, string>): string 
   return result;
 }
 
+async function writeEnvFile(targetDir: string, examplePath: string) {
+  const example = await fsp.readFile(examplePath, "utf-8");
+  const content = example.replace(
+    /^TELODOCS_API_KEY=.*$/m,
+    `TELODOCS_API_KEY=${DEFAULT_API_KEY}`,
+  );
+
+  await fsp.writeFile(path.join(targetDir, ".env"), content);
+}
+
 function initGit(targetDir: string) {
   const git = (args: string[]) =>
     spawnSync("git", args, { cwd: targetDir, stdio: "pipe", encoding: "utf-8" });
@@ -156,7 +174,7 @@ function printNextSteps(projectName: string, targetDir: string) {
   console.log(`  cd ${relativeDir}`);
   console.log("  npx telodocs dev\n");
   console.log("Optional:");
-  console.log("  cp .env.example .env");
+  console.log("  Edit .env to change port or enable gated auth (API key is already set)");
   console.log("");
   console.log("Then:");
   console.log("  - Open http://localhost:3000 for the docs site");
