@@ -116,16 +116,6 @@ docs/  →  telodocs server
               └── /      ← humans
 ```
 
-## Contributing
-
-```bash
-git clone https://github.com/teloset/telodocs.git
-cd telodocs
-npm install
-npm run build
-npm test
-```
-
 ## License
 
 MIT
