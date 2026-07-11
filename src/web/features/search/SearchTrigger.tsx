@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useSearchDialog } from "./search-dialog-context";
 import "./search.css";
 

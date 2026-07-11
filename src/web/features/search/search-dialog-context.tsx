@@ -25,11 +25,15 @@ const SearchDialogContext = createContext<SearchDialogContextValue | null>(
 function SearchDialogPanel({
   query,
   setQuery,
+  isOpen,
+  setOpen,
 }: {
   query: string;
   setQuery: (query: string) => void;
+  isOpen: boolean;
+  setOpen: (open: boolean) => void;
 }) {
-  const { isOpen, close } = useSearchDialog();
+  const close = useCallback(() => setOpen(false), [setOpen]);
   const navigate = useNavigate();
   const searchQuery = useDocsSearchQuery(query, isOpen);
   const results = searchQuery.data ?? [];
@@ -37,13 +41,10 @@ function SearchDialogPanel({
   return (
     <Command.Dialog
       open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          close();
-        }
-      }}
+      onOpenChange={setOpen}
       label="Search documentation"
-      className="docs-search-dialog"
+      overlayClassName="docs-search-overlay"
+      contentClassName="docs-search-dialog"
       shouldFilter={false}
     >
       <div className="docs-search-input-wrap">
@@ -53,6 +54,7 @@ function SearchDialogPanel({
           placeholder="Search documentation…"
           value={query}
           onValueChange={setQuery}
+          autoFocus
         />
       </div>
       {searchQuery.isFetching ? (
@@ -85,28 +87,34 @@ export function SearchDialogProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
 
+  const setOpen = useCallback((open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+      setQuery("");
+    }
+  }, []);
+
   const open = useCallback(() => {
     setQuery("");
     setIsOpen(true);
   }, []);
 
   const close = useCallback(() => {
-    setIsOpen(false);
-    setQuery("");
-  }, []);
+    setOpen(false);
+  }, [setOpen]);
 
   useHotkeys(
     "mod+k",
     (event) => {
       event.preventDefault();
-      setIsOpen((open) => {
-        if (open) {
-          setQuery("");
-        }
-        return !open;
-      });
+      if (isOpen) {
+        close();
+      } else {
+        open();
+      }
     },
     { enableOnFormTags: true },
+    [close, isOpen, open],
   );
 
   const value = useMemo(
@@ -117,7 +125,12 @@ export function SearchDialogProvider({ children }: { children: ReactNode }) {
   return (
     <SearchDialogContext.Provider value={value}>
       {children}
-      <SearchDialogPanel query={query} setQuery={setQuery} />
+      <SearchDialogPanel
+        query={query}
+        setQuery={setQuery}
+        isOpen={isOpen}
+        setOpen={setOpen}
+      />
     </SearchDialogContext.Provider>
   );
 }
