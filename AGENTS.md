@@ -55,21 +55,18 @@ telodocs is published to npm. Treat every merged change as a release unless the 
 ### Ship workflow
 
 1. Open a PR with the code change **and** the version bump
-2. After the PR merges to `main`, pull `main` and create an annotated tag matching the version:
-   ```bash
-   git checkout main && git pull origin main
-   git tag -a vX.Y.Z -m "Release vX.Y.Z with <short summary>."
-   git push origin vX.Y.Z
-   ```
-3. Pushing a `v*` tag triggers `.github/workflows/publish.yml` (trusted publishing to npm as `telodocs`)
-4. Confirm the Publish workflow succeeds on GitHub Actions
+2. Merge the PR to `main`
+3. Done — `.github/workflows/publish.yml` runs on every push to `main`:
+   - builds and tests
+   - if `package.json` version is not yet on npm, creates tag `vX.Y.Z` and publishes with provenance
+   - if that version is already on npm, skips tagging/publishing (safe no-op)
 
 ### Do not
 
 - Publish with `npm publish` locally (unless bootstrapping a new package name)
-- Create or push the `v*` tag from an unmerged feature branch
+- Create or push `v*` tags by hand for normal releases (CI owns tagging)
 - Leave `package.json` / `package-lock.json` versions out of sync
-- Skip the post-merge tag — a merged bump without a tag never reaches npm
+- Merge to `main` without a version bump — nothing new will be published
 
 ## Testing docs UI changes
 
