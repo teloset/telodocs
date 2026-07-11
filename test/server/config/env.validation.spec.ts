@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateEnvironment } from "../../src/core/config/env.validation";
+import { validateEnvironment } from "../../../src/server/core/config/env.validation";
 
 describe("validateEnvironment", () => {
   it("applies defaults for optional telodocs settings", () => {

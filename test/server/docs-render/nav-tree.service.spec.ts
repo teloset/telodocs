@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buildConfigNav } from "../../src/docs-render/builders/config-nav.builder";
-import { buildFileNav } from "../../src/docs-render/builders/file-nav.builder";
-import { splitFrontmatter } from "../../src/docs-render/utils/frontmatter.util";
-import { resolvePageSlug } from "../../src/docs-render/utils/page-slug.util";
+import { buildConfigNav } from "../../../src/server/docs-render/builders/config-nav.builder";
+import { buildFileNav } from "../../../src/server/docs-render/builders/file-nav.builder";
+import { splitFrontmatter } from "../../../src/server/docs-render/utils/frontmatter.util";
+import { resolvePageSlug } from "../../../src/server/docs-render/utils/page-slug.util";
 
 describe("docs navigation", () => {
   const files = [

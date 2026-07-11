@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
-import { SearchService } from "../../src/search/search.service";
-import { AppConfig } from "../../src/core/config/config.schema";
+import { SearchService } from "../../../src/server/search/search.service";
+import { AppConfig } from "../../../src/server/core/config/config.schema";
 
 describe("SearchService", () => {
   let tmpDir: string;

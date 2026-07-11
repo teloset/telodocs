@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { toDocsAssetUrl } from "../../src/docs-render/utils/asset-url.util";
+import { toDocsAssetUrl } from "../../../src/server/docs-render/utils/asset-url.util";
 
 describe("toDocsAssetUrl", () => {
   it("builds a docs asset URL from a relative path", () => {

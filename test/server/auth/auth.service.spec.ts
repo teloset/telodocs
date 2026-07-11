@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { AuthService } from "../../src/auth/auth.service";
-import { API_KEY_COOKIE } from "../../src/auth/auth.constants";
+import { AuthService } from "../../../src/server/auth/auth.service";
+import { API_KEY_COOKIE } from "../../../src/server/auth/auth.constants";
 
 describe("AuthService", () => {
   const originalEnv = process.env.TELODOCS_API_KEY;

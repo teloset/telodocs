@@ -1,13 +1,12 @@
-## Configuration
+# {{projectName}} Docs
 
-All settings live in `.env` (copy from `.env.example`):
+Your documentation lives in `docs/`. Telodocs runs the site and MCP server.
 
-| Variable | Default | Description |
-|---|---|---|
-| `TELODOCS_API_KEY` | — | Required when docs or MCP auth is `gated` |
-| `TELODOCS_DOCS_AUTH` | `open` | `open` or `gated` (browser login page) |
-| `TELODOCS_MCP_AUTH` | `open` | `open` or `gated` (Bearer token for `/mcp`) |
-| `PORT` | `3000` | HTTP port |
-| `TELODOCS_DOCS_DIR` | `./docs` | Documentation directory |
-| `TELODOCS_MCP_PATH` | `/mcp` | MCP endpoint path |
-| `TELODOCS_SUPPORTED_EXTENSIONS` | `.md,.mdx,.txt,.rst` | Comma-separated file types |
+```bash
+npx telodocs dev
+```
+
+- Docs site: http://localhost:3000
+- MCP server: http://localhost:3000/mcp
+
+Optional: copy `.env.example` to `.env` to change port or enable auth.

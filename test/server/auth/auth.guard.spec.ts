@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { AuthGuard } from "../../src/auth/auth.guard";
-import { AuthService } from "../../src/auth/auth.service";
-import { API_KEY_COOKIE } from "../../src/auth/auth.constants";
-import { AppConfig } from "../../src/core/config/config.schema";
+import { AuthGuard } from "../../../src/server/auth/auth.guard";
+import { AuthService } from "../../../src/server/auth/auth.service";
+import { API_KEY_COOKIE } from "../../../src/server/auth/auth.constants";
+import { AppConfig } from "../../../src/server/core/config/config.schema";
 
 function makeGuard(docsAuth: "gated" | "open", isPublic = false): AuthGuard {
   const reflector = {

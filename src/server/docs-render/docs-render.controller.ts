@@ -1,17 +1,9 @@
 import { Controller, Get, Param, Res } from "@nestjs/common";
 import { Response } from "express";
-import fs from "node:fs";
-import path from "node:path";
 import { DocsRenderService } from "./docs-render.service";
 import { DocsStaticService } from "./docs-static.service";
 import { LayoutService } from "./layout.service";
-
-const ASSET_NAMES = [
-  "docs-shell.css",
-  "docs-prose.css",
-  "docs-toc.css",
-  "docs.js",
-] as const;
+import { readServerAsset } from "./utils/server-asset.util";
 
 @Controller()
 export class DocsRenderController {
@@ -71,18 +63,7 @@ export class DocsRenderController {
     res.type("application/javascript").send(this.loadAsset("docs.js"));
   }
 
-  private loadAsset(name: (typeof ASSET_NAMES)[number]): string {
-    const candidates = [
-      path.join(__dirname, "assets", name),
-      path.join(process.cwd(), "src/docs-render/assets", name),
-    ];
-
-    for (const candidate of candidates) {
-      if (fs.existsSync(candidate)) {
-        return fs.readFileSync(candidate, "utf-8");
-      }
-    }
-
-    throw new Error(`Docs asset not found: ${name}`);
+  private loadAsset(name: string): string {
+    return readServerAsset(name);
   }
 }

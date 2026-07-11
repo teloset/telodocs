@@ -1,9 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import fs from "node:fs";
-import path from "node:path";
 import { NavItem } from "./types/nav-item.interface";
 import { escapeHtml } from "./utils/html.util";
 import { NavHtmlRenderer } from "./nav-html.renderer";
+import { readServerAsset } from "./utils/server-asset.util";
 
 export interface PageLayoutOptions {
   title: string;
@@ -90,17 +89,6 @@ export class LayoutService {
   }
 
   private loadAsset(name: string): string {
-    const candidates = [
-      path.join(__dirname, "assets", name),
-      path.join(process.cwd(), "src/docs-render/assets", name),
-    ];
-
-    for (const candidate of candidates) {
-      if (fs.existsSync(candidate)) {
-        return fs.readFileSync(candidate, "utf-8");
-      }
-    }
-
-    throw new Error(`Docs asset not found: ${name}`);
+    return readServerAsset(name);
   }
 }

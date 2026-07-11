@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { buildAppConfig } from "../../src/core/config/configuration";
+import { buildAppConfig } from "../../../src/server/core/config/configuration";
 
 describe("buildAppConfig", () => {
   let tmpDir: string;

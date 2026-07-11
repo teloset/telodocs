@@ -6,14 +6,7 @@ import { spawnSync } from "node:child_process";
 
 const PROJECT_NAME_RE = /^[a-zA-Z][a-zA-Z0-9._-]*$/;
 
-const SKIP_DIRS = new Set([
-  "node_modules",
-  "dist",
-  ".git",
-  "coverage",
-]);
-
-const SKIP_FILES = new Set<string>();
+const SCAFFOLD_ENTRIES = ["docs", ".env.example", ".gitignore", "README.md"];
 
 export function registerNewCommand(program: Command) {
   program
@@ -29,7 +22,7 @@ export function registerNewCommand(program: Command) {
       await assertTargetEmpty(targetDir);
 
       const templateDir = resolveTemplateDir();
-      await copyTemplate(templateDir, targetDir, projectName);
+      await copyScaffold(templateDir, targetDir, projectName);
 
       if (options.git !== false) {
         initGit(targetDir);
@@ -79,7 +72,7 @@ function resolveTemplateDir(): string {
   throw new Error("Could not locate template directory");
 }
 
-async function copyTemplate(
+async function copyScaffold(
   templateDir: string,
   targetDir: string,
   projectName: string,
@@ -94,7 +87,22 @@ async function copyTemplate(
     "{{projectNameKebab}}": projectNameKebab,
   };
 
-  await copyDir(templateDir, targetDir, tokens);
+  for (const entry of SCAFFOLD_ENTRIES) {
+    const srcPath = path.join(templateDir, entry);
+    const destPath = path.join(targetDir, entry);
+
+    if (!fs.existsSync(srcPath)) {
+      continue;
+    }
+
+    const stat = fs.statSync(srcPath);
+    if (stat.isDirectory()) {
+      await copyDir(srcPath, destPath, tokens);
+    } else {
+      const content = await fsp.readFile(srcPath, "utf-8");
+      await fsp.writeFile(destPath, replaceTokens(content, tokens));
+    }
+  }
 }
 
 async function copyDir(
@@ -106,8 +114,6 @@ async function copyDir(
   const entries = await fsp.readdir(src, { withFileTypes: true });
 
   for (const entry of entries) {
-    if (SKIP_DIRS.has(entry.name)) continue;
-
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
 
@@ -116,11 +122,8 @@ async function copyDir(
       continue;
     }
 
-    if (SKIP_FILES.has(entry.name)) continue;
-
     const content = await fsp.readFile(srcPath, "utf-8");
-    const replaced = replaceTokens(content, tokens);
-    await fsp.writeFile(destPath, replaced);
+    await fsp.writeFile(destPath, replaceTokens(content, tokens));
   }
 }
 
@@ -147,13 +150,13 @@ function initGit(targetDir: string) {
 }
 
 function printNextSteps(projectName: string, targetDir: string) {
+  const relativeDir = path.relative(process.cwd(), targetDir) || ".";
   console.log(`\nCreated ${projectName} at ${targetDir}\n`);
-  console.log("Next steps:");
-  console.log(`  cd ${path.relative(process.cwd(), targetDir) || "."}`);
+  console.log("Your docs live in docs/. Edit them, then run:\n");
+  console.log(`  cd ${relativeDir}`);
+  console.log("  npx telodocs dev\n");
+  console.log("Optional:");
   console.log("  cp .env.example .env");
-  console.log("  # Set TELODOCS_API_KEY in .env");
-  console.log("  npm install");
-  console.log("  npm run dev");
   console.log("");
   console.log("Then:");
   console.log("  - Open http://localhost:3000 for the docs site");
