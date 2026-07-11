@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { SiteBranding } from "../../shared/types/docs";
 import { useSearchDialog } from "../search/search-dialog-context";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface TopbarProps {
   site?: SiteBranding;
@@ -63,16 +64,18 @@ export function Topbar({ site, onMenuClick }: TopbarProps) {
         </Button>
       </div>
 
-      <div className="flex flex-1 justify-end md:hidden">
+      <div className="flex flex-1 items-center justify-end gap-2">
         <Button
           type="button"
           variant="outline"
           size="icon"
+          className="md:hidden"
           aria-label="Search documentation"
           onClick={open}
         >
           <Search className="size-4" />
         </Button>
+        <ThemeToggle />
       </div>
     </header>
   );
