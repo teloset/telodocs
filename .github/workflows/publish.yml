@@ -2,18 +2,20 @@ name: Publish
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -27,5 +29,34 @@ jobs:
       - run: npm run build
       - run: npm test
 
+      - name: Resolve release version
+        id: release
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          if npm view "telodocs@${VERSION}" version >/dev/null 2>&1; then
+            echo "Already on npm: telodocs@${VERSION}"
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "New version: telodocs@${VERSION}"
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create release tag
+        if: steps.release.outputs.should_publish == 'true'
+        run: |
+          VERSION="${{ steps.release.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch --tags
+          if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${VERSION} already exists"
+          else
+            git tag -a "v${VERSION}" -m "Release v${VERSION}"
+            git push origin "v${VERSION}"
+          fi
+
       - name: Publish to npm with provenance
+        if: steps.release.outputs.should_publish == 'true'
         run: npm publish --provenance --access public
