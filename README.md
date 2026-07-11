@@ -1,10 +1,8 @@
 # Telodocs
 
-Documentation MCP server and docs site. You only maintain a `docs/` folder — telodocs runs the server, UI, and MCP tools.
+**Docs site + MCP server from a single `docs/` folder.**
 
-Published as [`telodocs`](https://www.npmjs.com/package/telodocs) on npm.
-
-## Quick start
+Write Markdown. Telodocs runs the browser UI, search, and MCP tools (`glob_docs`, `grep_docs`, `read_doc`) — no NestJS app, no build step in your project.
 
 ```bash
 npx telodocs new my-docs
@@ -12,26 +10,26 @@ cd my-docs
 npx telodocs dev
 ```
 
-- **Docs site:** http://localhost:3000
-- **MCP server:** http://localhost:3000/mcp
+- **Docs site:** http://localhost:3000  
+- **MCP server:** http://localhost:3000/mcp  
 
-On scaffold, a `.env` file is created automatically. Auth is **open** by default — no API key needed until you enable gated mode.
+[GitHub](https://github.com/teloset/telodocs) · [npm](https://www.npmjs.com/package/telodocs)
 
 ## What you get
 
-After `telodocs new`, your project contains:
+After `telodocs new`:
 
 ```
 my-docs/
-├── docs/              # your content (Markdown, docs.json, logo, favicon)
+├── docs/              # Markdown, docs.json, logo, favicon
 ├── AGENTS.md          # instructions for AI agents writing docs
 ├── README.md
 ├── .env               # settings + default API key (gitignored)
-├── .env.example       # reference copy
+├── .env.example
 └── .gitignore
 ```
 
-Sample content under `docs/`:
+Sample pages under `docs/`:
 
 ```
 docs/
@@ -43,27 +41,29 @@ docs/
 └── conventions.md
 ```
 
-Telodocs provides the NestJS server, docs UI, and MCP tools when you run `telodocs dev` or `telodocs start`.
+Telodocs ships the server when you run `telodocs dev` or `telodocs start` — your repo stays docs-only.
 
 ## Commands
 
 | Command | Description |
 |---|---|
-| `telodocs new <name>` | Create a docs-only project |
-| `telodocs dev` | Start server in development mode |
-| `telodocs start` | Start server in production mode |
+| `telodocs new <name>` | Scaffold a docs-only project |
+| `telodocs dev` | Start server (development) |
+| `telodocs start` | Start server (production) |
 
-Run these from your project directory (where `docs/` lives).
+Run from the directory that contains `docs/`.
 
-## Customize
+## Customize the site
 
-- Edit `docs/docs.json` for site name, logo, favicon, and sidebar navigation
-- Add Markdown pages under `docs/`
-- See `AGENTS.md` in your project for doc authoring conventions (also compatible with [agents.md](https://agents.md/))
+- **`docs/docs.json`** — site name, logo, favicon, sidebar navigation (Mintlify-style)
+- **`docs/*.md`** — pages with optional frontmatter (`title`, `description`, `group`)
+- **`AGENTS.md`** — doc authoring guide for coding agents ([agents.md](https://agents.md/) compatible)
 
-## Connect your MCP client
+## MCP client setup
 
-By default, MCP is open — no headers required. When you set `TELODOCS_MCP_AUTH=gated` in `.env`, use the API key from that file.
+MCP is **open** by default — no auth headers needed.
+
+To require a key, set `TELODOCS_MCP_AUTH=gated` in `.env` and use `TELODOCS_API_KEY` as the bearer token.
 
 ### Cursor
 
@@ -80,11 +80,11 @@ By default, MCP is open — no headers required. When you set `TELODOCS_MCP_AUTH
 }
 ```
 
-Replace the bearer token with your `TELODOCS_API_KEY` if you changed it in `.env`.
+Omit `headers` while auth is `open`. Replace the token if you changed `TELODOCS_API_KEY` in `.env`.
 
 ## Configuration
 
-Settings live in `.env` (created on `telodocs new`; see `.env.example` for reference):
+`.env` is created on `telodocs new`:
 
 | Variable | Default | Description |
 |---|---|---|
@@ -95,15 +95,15 @@ Settings live in `.env` (created on `telodocs new`; see `.env.example` for refer
 | `TELODOCS_DOCS_DIR` | `./docs` | Documentation directory |
 | `TELODOCS_MCP_PATH` | `/mcp` | MCP endpoint path |
 
-## Architecture
+## How it works
 
 ```
-docs/  →  telodocs server (glob/grep/read)
-              ├── /mcp   ← agents
+docs/  →  telodocs server
+              ├── /mcp   ← coding agents
               └── /      ← humans
 ```
 
-## Development (telodocs repo)
+## Contributing
 
 ```bash
 git clone https://github.com/teloset/telodocs.git
