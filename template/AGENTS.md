@@ -126,7 +126,7 @@ If you are moving an existing Mintlify docs site:
 
 2. **Move config** — copy your Mintlify `docs.json` into `docs/docs.json`. Telodocs uses the same top-level shape (`name`, `logo`, `favicon`, `navigation.tabs[].groups[].pages`).
 
-3. **Use nested sidebar groups** — nest groups inside `pages` (Mintlify format). Telodocs renders them as collapsible dropdowns. Set `"expanded": true` to open a section by default.
+3. **Use nested sidebar groups** — nest groups inside `pages` (Mintlify format). Telodocs renders them as collapsible dropdowns. Set `"expanded": true` to open a section by default. If your export still has flat groups named `Engineering Standards — API Design`, telodocs folds them into a tree automatically — no manual rename required.
 
 4. **Normalize page slugs** — use paths relative to `docs/` without a leading `docs/` prefix and without `.md`/`.mdx` (for example `guides/getting-started`, not `docs/guides/getting-started.md`).
 

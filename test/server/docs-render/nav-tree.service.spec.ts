@@ -94,6 +94,51 @@ describe("docs navigation", () => {
     });
   });
 
+  it("nests flattened Mintlify-style group names into a tree", () => {
+    const tree = buildConfigNav(
+      {
+        navigation: {
+          tabs: [
+            {
+              tab: "Docs",
+              groups: [
+                {
+                  group: "Overview",
+                  pages: ["index"],
+                },
+                {
+                  group: "Engineering Standards",
+                  pages: ["guides/getting-started"],
+                },
+                {
+                  group: "Engineering Standards — Reference",
+                  pages: ["conventions"],
+                },
+              ],
+            },
+          ],
+        },
+      },
+      files,
+    );
+
+    expect(tree).toHaveLength(2);
+    expect(tree[0]?.name).toBe("Overview");
+    expect(tree[1]).toMatchObject({
+      name: "Engineering Standards",
+      isGroup: true,
+    });
+    expect(tree[1]?.children).toHaveLength(2);
+    expect(tree[1]?.children[0]).toMatchObject({
+      path: "guides/getting-started.md",
+    });
+    expect(tree[1]?.children[1]).toMatchObject({
+      name: "Reference",
+      isGroup: true,
+      children: [expect.objectContaining({ path: "conventions.md" })],
+    });
+  });
+
   it("resolves page slugs to files", () => {
     expect(resolvePageSlug("guides/getting-started", files)).toBe(
       "guides/getting-started.md",

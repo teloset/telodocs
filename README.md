@@ -49,6 +49,7 @@ Telodocs reads a Mintlify-style `docs/docs.json` and supports `.md` / `.mdx` pag
 
 - Put `docs.json`, logo, and favicon under `docs/`
 - Use nested groups in `pages` for collapsible sidebar sections (Mintlify format)
+- Flat groups named `Parent — Child` are auto-nested into a tree (common after Mintlify export)
 - Use page slugs without extensions (e.g. `guides/getting-started`)
 - Only root `index` is the homepage — section indexes stay at `/docs/.../index.mdx`
 - Replace Mintlify `<Card>` components with `<div class="docs-card-grid">` / `<a class="docs-card">`

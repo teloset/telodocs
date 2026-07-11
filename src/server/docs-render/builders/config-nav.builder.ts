@@ -4,6 +4,7 @@ import {
   DocsConfigPageEntry,
 } from "../types/docs-config.interface";
 import { NavItem } from "../types/nav-item.interface";
+import { nestPrefixedConfigGroups } from "./nest-config-groups.util";
 import { pageHref, resolvePageSlug } from "../utils/page-slug.util";
 import { titleFromPath } from "../utils/title.util";
 
@@ -100,7 +101,9 @@ export function buildConfigNav(
   files: string[],
   titles: Record<string, string> = {},
 ): NavItem[] {
-  const groups = config.navigation?.tabs?.[0]?.groups ?? [];
+  const groups = nestPrefixedConfigGroups(
+    config.navigation?.tabs?.[0]?.groups ?? [],
+  );
 
   return groups.map((group) => buildGroupItem(group, files, titles));
 }

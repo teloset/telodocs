@@ -1,6 +1,6 @@
 {
   "name": "telodocs",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Documentation MCP server and docs site — content in docs/, telodocs runs the rest",
   "author": "Sofonias <sofonias@teloset.com>",
   "homepage": "https://github.com/teloset/telodocs#readme",
