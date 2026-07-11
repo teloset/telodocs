@@ -7,5 +7,6 @@ export function useDocsNavQuery() {
     queryKey: docsQueryKeys.nav(),
     queryFn: fetchNav,
     select: (data) => data.items,
+    staleTime: Infinity,
   });
 }

@@ -1,27 +1,14 @@
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export function useDocPathFromRoute(): string | undefined {
-  const { pathname } = useLocation();
-  if (pathname === "/") {
+  const splat = useParams()["*"];
+  if (!splat) {
     return undefined;
   }
-
-  if (pathname.startsWith("/docs/")) {
-    return decodeURIComponent(pathname.slice("/docs/".length));
-  }
-
-  return undefined;
+  return decodeURIComponent(splat);
 }
 
 export function useActiveDocPath(): string {
-  const { pathname } = useLocation();
-  if (pathname === "/") {
-    return "index.md";
-  }
-
-  if (pathname.startsWith("/docs/")) {
-    return decodeURIComponent(pathname.slice("/docs/".length));
-  }
-
-  return "";
+  const docPath = useDocPathFromRoute();
+  return docPath ?? "index.md";
 }

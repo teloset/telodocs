@@ -108,5 +108,18 @@
 }
 
 .docs-page-error {
+  padding: 2rem 0;
   color: #b91c1c;
+}
+
+.docs-page-skeleton {
+  min-height: 12rem;
+}
+
+.docs-page.is-fetching {
+  opacity: 0.92;
+}
+
+.docs-page.is-pending {
+  opacity: 0.92;
 }

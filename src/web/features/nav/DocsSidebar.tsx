@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useDocsShell } from "../../app/docs-shell-context";
 import type { NavItem } from "../../shared/types/docs";
+import { docPathsMatch } from "../../shared/utils/doc-path";
 import { useActiveDocPath } from "../docs/hooks/use-doc-path";
 import "./nav.css";
 
@@ -12,7 +13,7 @@ interface DocsSidebarProps {
 function containsActive(nodes: NavItem[], activePath: string): boolean {
   return nodes.some(
     (node) =>
-      node.path === activePath ||
+      docPathsMatch(activePath, node.path) ||
       (node.path && activePath.startsWith(`${node.path}/`)) ||
       containsActive(node.children, activePath),
   );
@@ -20,7 +21,7 @@ function containsActive(nodes: NavItem[], activePath: string): boolean {
 
 function folderIsActive(node: NavItem, activePath: string): boolean {
   return (
-    node.path === activePath ||
+    docPathsMatch(activePath, node.path) ||
     Boolean(node.path && activePath.startsWith(`${node.path}/`)) ||
     containsActive(node.children, activePath)
   );
@@ -63,6 +64,7 @@ function NavNode({
   activePath: string;
   onNavigate: () => void;
 }) {
+  const { pathname } = useLocation();
   const isFolder = node.children.length > 0 && !node.path;
   const branchActive = isFolder && folderIsActive(node, activePath);
   const [override, setOverride] = useState<{
@@ -111,12 +113,15 @@ function NavNode({
   }
 
   const href = node.href ?? (node.path ? `/docs/${node.path}` : "/");
+  const isActiveLink =
+    href === "/"
+      ? pathname === "/"
+      : docPathsMatch(activePath, node.path);
+
   return (
     <li className="docs-nav-item">
       <NavLink
-        className={({ isActive }) =>
-          isActive ? "docs-nav-link is-active" : "docs-nav-link"
-        }
+        className={isActiveLink ? "docs-nav-link is-active" : "docs-nav-link"}
         to={href}
         end={href === "/"}
         onClick={onNavigate}

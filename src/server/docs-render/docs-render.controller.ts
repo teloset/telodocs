@@ -4,9 +4,10 @@ import {
   NotFoundException,
   Param,
   Query,
+  Req,
   Res,
 } from "@nestjs/common";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { DocsApiService } from "./docs-api.service";
 import { DocsSearchService } from "./docs-search.service";
 import { DocsSpaService } from "./docs-spa.service";
@@ -76,7 +77,7 @@ export class DocsRenderController {
   }
 
   @Get(["", "docs", "docs/*path"])
-  spaFallback(@Res() res: Response) {
-    res.type("html").sendFile(this.docsSpa.getIndexPath());
+  async spaFallback(@Req() req: Request, @Res() res: Response) {
+    res.type("html").send(await this.docsSpa.renderIndex(req.path));
   }
 }

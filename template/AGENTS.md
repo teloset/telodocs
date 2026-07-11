@@ -80,9 +80,50 @@ Edit `docs/docs.json` to control site name, branding, and sidebar order:
 }
 ```
 
-Page slugs in `pages` are paths **without** `.md`, relative to `docs/` (for example `guides/getting-started` → `docs/guides/getting-started.md`).
+Page slugs in `pages` are paths **without** the file extension, relative to `docs/` (for example `guides/getting-started` → `docs/guides/getting-started.md`).
+
+**Important:** Only `index` at the root of `docs/` becomes the site homepage (`/`). Section index pages such as `engineering-standards/index` are normal pages at `/docs/engineering-standards/index.mdx` — do not expect every folder's `index` page to map to `/`.
 
 Logo and favicon paths are relative to `docs/` and served at `/docs-assets/*`.
+
+### Migrating from Mintlify
+
+If you are moving an existing Mintlify docs site:
+
+1. **Install telodocs in your repo** (recommended):
+
+   ```json
+   {
+     "scripts": {
+       "dev": "telodocs dev",
+       "start": "telodocs start"
+     },
+     "dependencies": {
+       "telodocs": "^0.3.1"
+     }
+   }
+   ```
+
+2. **Move config** — copy your Mintlify `docs.json` into `docs/docs.json`. Telodocs uses the same top-level shape (`name`, `logo`, `favicon`, `navigation.tabs[].groups[].pages`).
+
+3. **Flatten nested sidebar groups** — telodocs currently supports one level of groups. Merge nested Mintlify groups into flat names such as `Engineering Standards — API Design`.
+
+4. **Normalize page slugs** — use paths relative to `docs/` without a leading `docs/` prefix and without `.md`/`.mdx` (for example `guides/getting-started`, not `docs/guides/getting-started.md`).
+
+5. **Convert Mintlify components** — replace `<Card>` / `<CardGroup>` blocks with telodocs card grids:
+
+   ```html
+   <div class="docs-card-grid">
+     <a class="docs-card" href="/docs/guides/getting-started.md">
+       <h3>Getting started</h3>
+       <p>Short description.</p>
+     </a>
+   </div>
+   ```
+
+6. **Keep `.mdx` if you already use it** — telodocs supports both `.md` and `.mdx`.
+
+7. **Verify navigation links** — after migration, click section index pages in the sidebar and confirm each opens the right page (not the site homepage).
 
 Remove `docs.json` entirely to fall back to an automatic file-tree sidebar.
 

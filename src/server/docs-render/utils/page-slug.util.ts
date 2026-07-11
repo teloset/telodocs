@@ -27,8 +27,12 @@ export function resolvePageSlug(
 }
 
 export function pageHref(resolvedPath: string): string {
-  if (/(^|\/)index\.mdx?$/i.test(resolvedPath)) {
+  if (/^index\.mdx?$/i.test(resolvedPath)) {
     return "/";
   }
   return `/docs/${encodeURI(resolvedPath)}`;
+}
+
+export function isRootIndexPath(resolvedPath: string): boolean {
+  return /^index\.mdx?$/i.test(resolvedPath);
 }

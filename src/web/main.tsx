@@ -1,9 +1,12 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { App } from "./app/App";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./app/router";
+import { hydrateDocsBootstrap } from "./shared/api/bootstrap";
 import "./shared/styles/tokens.css";
 import "./shared/styles/base.css";
+
+hydrateDocsBootstrap();
 
 const root = document.getElementById("root");
 if (!root) {
@@ -12,8 +15,6 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <RouterProvider router={router} />
   </StrictMode>,
 );

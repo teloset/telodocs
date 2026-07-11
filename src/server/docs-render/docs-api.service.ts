@@ -40,9 +40,7 @@ export class DocsApiService {
   }
 
   async getPage(relativePath?: string): Promise<DocPagePayload> {
-    const resolvedPath = relativePath?.trim()
-      ? relativePath
-      : await this.resolveIndexPath();
+    const resolvedPath = await this.resolveDocPath(relativePath);
 
     if (!resolvedPath) {
       const branding = await this.config.getBranding();
@@ -57,11 +55,43 @@ export class DocsApiService {
     return this.loadPage(resolvedPath);
   }
 
-  private async resolveIndexPath(): Promise<string | null> {
+  async resolveDocPath(relativePath?: string): Promise<string | null> {
+    if (!relativePath?.trim()) {
+      return this.resolveRootIndexPath();
+    }
+
+    const files = await this.search.listDocFiles();
+    const normalized = relativePath.replace(/^\//, "");
+
+    if (files.includes(normalized)) {
+      return normalized;
+    }
+
+    if (/\.md$/i.test(normalized)) {
+      const asMdx = normalized.replace(/\.md$/i, ".mdx");
+      if (files.includes(asMdx)) {
+        return asMdx;
+      }
+    }
+
+    if (!normalized.includes(".")) {
+      const asMd = `${normalized}.md`;
+      const asMdx = `${normalized}.mdx`;
+      if (files.includes(asMd)) {
+        return asMd;
+      }
+      if (files.includes(asMdx)) {
+        return asMdx;
+      }
+    }
+
+    return normalized;
+  }
+
+  private async resolveRootIndexPath(): Promise<string | null> {
+    const files = await this.search.listDocFiles();
     return (
-      (await this.search.listDocFiles()).find((file) =>
-        /(^|\/)index\.mdx?$/i.test(file),
-      ) ?? null
+      files.find((file) => /^index\.mdx?$/i.test(file)) ?? null
     );
   }
 

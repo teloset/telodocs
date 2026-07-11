@@ -17,29 +17,26 @@ export function DocsLayout() {
   const navQuery = useDocsNavQuery();
   const pageQuery = useDocPageQuery(docPath);
 
-  const loading = siteQuery.isLoading || navQuery.isLoading;
-  const error = siteQuery.error ?? navQuery.error;
+  const site = siteQuery.data;
+  const nav = navQuery.data ?? [];
   const headings = pageQuery.data?.headings ?? [];
   const hasToc = headings.some((heading) => heading.level >= 2);
+  const fatalError = siteQuery.error ?? navQuery.error;
 
-  if (loading) {
-    return <div className="docs-status">Loading documentation…</div>;
-  }
-
-  if (error) {
+  if (fatalError) {
     return (
       <div className="docs-status">
-        {error instanceof Error ? error.message : "Failed to load docs"}
+        {fatalError instanceof Error ? fatalError.message : "Failed to load docs"}
       </div>
     );
   }
 
   return (
     <div className={`docs-app${sidebarOpen ? " docs-sidebar-open" : ""}`}>
-      <DocumentHead faviconUrl={siteQuery.data?.faviconUrl} />
-      <Topbar site={siteQuery.data} />
+      <DocumentHead faviconUrl={site?.faviconUrl} />
+      <Topbar site={site} />
       <div className={`docs-shell${hasToc ? " has-toc" : ""}`}>
-        <DocsSidebar nav={navQuery.data ?? []} />
+        <DocsSidebar nav={nav} />
         <main className="docs-main">
           <div className="docs-content">
             <Outlet />

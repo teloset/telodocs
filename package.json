@@ -1,6 +1,6 @@
 {
   "name": "telodocs",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Documentation MCP server and docs site — content in docs/, telodocs runs the rest",
   "author": "Sofonias <sofonias@teloset.com>",
   "homepage": "https://github.com/teloset/telodocs#readme",
@@ -52,6 +52,7 @@
     "@nestjs/platform-express": "^11.0.0",
     "@tanstack/react-query": "^5.101.2",
     "@vscode/ripgrep": "^1.15.11",
+    "cmdk": "^1.1.1",
     "commander": "^13.1.0",
     "cookie-parser": "^1.4.7",
     "fast-glob": "^3.3.3",
@@ -60,6 +61,7 @@
     "marked-gfm-heading-id": "^4.1.4",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-hotkeys-hook": "^5.3.3",
     "react-router-dom": "^7.18.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",

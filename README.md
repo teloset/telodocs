@@ -43,6 +43,18 @@ docs/
 
 Telodocs ships the server when you run `telodocs dev` or `telodocs start` — your repo stays docs-only.
 
+### Migrating from Mintlify
+
+Telodocs reads a Mintlify-style `docs/docs.json` and supports `.md` / `.mdx` pages. When moving an existing site:
+
+- Put `docs.json`, logo, and favicon under `docs/`
+- Flatten nested nav groups into single-level group names
+- Use page slugs without extensions (e.g. `guides/getting-started`)
+- Only root `index` is the homepage — section indexes stay at `/docs/.../index.mdx`
+- Replace Mintlify `<Card>` components with `<div class="docs-card-grid">` / `<a class="docs-card">`
+
+See `template/AGENTS.md` (copied into new projects) for step-by-step agent instructions.
+
 ## Commands
 
 | Command | Description |

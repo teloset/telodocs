@@ -6,5 +6,6 @@ export function useDocsSiteQuery() {
   return useQuery({
     queryKey: docsQueryKeys.site(),
     queryFn: fetchSite,
+    staleTime: Infinity,
   });
 }
