@@ -42,14 +42,34 @@ Documentation authoring instructions for end users live in `template/AGENTS.md` 
 
 ## Releases
 
-telodocs is an npm package. **Bump the version on every change** unless the user explicitly says not to.
+telodocs is published to npm. Treat every merged change as a release unless the user explicitly says not to bump.
 
-- Version lives in `package.json` (keep `package-lock.json` in sync)
-- Prefer patch bumps for incremental fixes/features (`0.4.0` → `0.4.1`); use minor/major when the change warrants it
-- Commit message style: `Release vX.Y.Z with <short summary>.`
-- Push a `v*` tag (after merge to the default branch) to trigger `.github/workflows/publish.yml` (trusted publishing to npm as `telodocs`)
-- Do not publish manually unless setting up a new package name on npm
-- Do not create/push the `v*` tag from an unmerged feature branch
+### Version bump (required on every change)
+
+1. Bump `version` in `package.json`
+2. Keep `package-lock.json` root/`packages[""]` version in sync (run `npm install` if needed — it rewrites a stale lockfile version)
+3. Prefer **patch** for incremental fixes/features (`0.4.0` → `0.4.1`); use **minor** / **major** when the change warrants it
+4. Include the bump in the same PR as the change
+5. Commit message style: `Release vX.Y.Z with <short summary>.`
+
+### Ship workflow
+
+1. Open a PR with the code change **and** the version bump
+2. After the PR merges to `main`, pull `main` and create an annotated tag matching the version:
+   ```bash
+   git checkout main && git pull origin main
+   git tag -a vX.Y.Z -m "Release vX.Y.Z with <short summary>."
+   git push origin vX.Y.Z
+   ```
+3. Pushing a `v*` tag triggers `.github/workflows/publish.yml` (trusted publishing to npm as `telodocs`)
+4. Confirm the Publish workflow succeeds on GitHub Actions
+
+### Do not
+
+- Publish with `npm publish` locally (unless bootstrapping a new package name)
+- Create or push the `v*` tag from an unmerged feature branch
+- Leave `package.json` / `package-lock.json` versions out of sync
+- Skip the post-merge tag — a merged bump without a tag never reaches npm
 
 ## Testing docs UI changes
 
@@ -61,3 +81,7 @@ TELODOCS_DOCS_DIR=./template/docs node dist/server/main.js
 ```
 
 Or scaffold a smoke project and run `telodocs dev`.
+
+### Theming
+
+Dark mode is class-based: apply `.dark` on `<html>` to activate tokens in `src/web/shared/styles/globals.css`. Preference is stored in `localStorage` as `telodocs-theme` (`light` | `dark` | `system`). Code blocks intentionally stay dark in both themes.
