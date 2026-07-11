@@ -81,7 +81,7 @@ export class AuthController {
       width: min(24rem, 92vw);
       background: #fff;
       border: 1px solid #e5e5e5;
-      border-radius: 8px;
+      border-radius: 0;
       padding: 2rem;
     }
     h1 { margin: 0 0 0.5rem; font-size: 1.5rem; }
@@ -91,7 +91,7 @@ export class AuthController {
       width: 100%;
       padding: 0.65rem 0.75rem;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 0;
       font: inherit;
     }
     button {
@@ -99,7 +99,7 @@ export class AuthController {
       width: 100%;
       padding: 0.7rem 1rem;
       border: 0;
-      border-radius: 6px;
+      border-radius: 0;
       background: #0066cc;
       color: #fff;
       font: inherit;

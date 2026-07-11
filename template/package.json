@@ -4,7 +4,7 @@
   "private": true,
   "description": "Documentation MCP server powered by Telodocs",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && mkdir -p dist/docs-render/assets && cp src/docs-render/assets/* dist/docs-render/assets/",
     "dev": "tsx watch --ignore 'node_modules/**' --ignore 'dist/**' src/main.ts",
     "start": "node dist/main.js",
     "check-types": "tsc --noEmit",

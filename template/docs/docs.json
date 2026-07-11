@@ -1,0 +1,22 @@
+{
+  "name": "{{projectName}} Docs",
+  "logo": "logo.svg",
+  "favicon": "favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": ["index", "guides/getting-started"]
+          },
+          {
+            "group": "Reference",
+            "pages": ["conventions"]
+          }
+        ]
+      }
+    ]
+  }
+}
