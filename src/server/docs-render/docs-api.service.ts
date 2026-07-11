@@ -11,6 +11,7 @@ import { NavItem } from "./types/nav-item.interface";
 import { TocHeading } from "./types/doc-frontmatter.interface";
 import { titleFromPath } from "./utils/title.util";
 import { escapeHtml } from "./utils/html.util";
+import { resolveDocFilePath } from "./utils/page-slug.util";
 
 export interface DocPagePayload {
   path: string;
@@ -43,6 +44,10 @@ export class DocsApiService {
     const resolvedPath = await this.resolveDocPath(relativePath);
 
     if (!resolvedPath) {
+      if (relativePath?.trim()) {
+        throw new NotFoundException(`Document not found: ${relativePath}`);
+      }
+
       const branding = await this.config.getBranding();
       return {
         path: "",
@@ -61,31 +66,7 @@ export class DocsApiService {
     }
 
     const files = await this.search.listDocFiles();
-    const normalized = relativePath.replace(/^\//, "");
-
-    if (files.includes(normalized)) {
-      return normalized;
-    }
-
-    if (/\.md$/i.test(normalized)) {
-      const asMdx = normalized.replace(/\.md$/i, ".mdx");
-      if (files.includes(asMdx)) {
-        return asMdx;
-      }
-    }
-
-    if (!normalized.includes(".")) {
-      const asMd = `${normalized}.md`;
-      const asMdx = `${normalized}.mdx`;
-      if (files.includes(asMd)) {
-        return asMd;
-      }
-      if (files.includes(asMdx)) {
-        return asMdx;
-      }
-    }
-
-    return normalized;
+    return resolveDocFilePath(relativePath, files);
   }
 
   private async resolveRootIndexPath(): Promise<string | null> {
@@ -102,7 +83,8 @@ export class DocsApiService {
     try {
       raw = await fs.readFile(safePath, "utf-8");
     } catch (err) {
-      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      const code = (err as NodeJS.ErrnoException).code;
+      if (code === "ENOENT" || code === "EISDIR") {
         throw new NotFoundException(`Document not found: ${relativePath}`);
       }
       throw err;
